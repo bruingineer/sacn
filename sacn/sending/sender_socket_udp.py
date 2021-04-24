@@ -51,12 +51,15 @@ class SenderSocketUDP(SenderSocketBase):
         self._logger.info(f'Started {THREAD_NAME}')
         self._enabled_flag = True
         while self._enabled_flag:
-            time_stamp = time.time()
+            # time_stamp = time.time()
+            time_stamp = time.perf_counter()
             self._listener.on_periodic_callback(time_stamp)
-            time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
-            if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
-                time_to_sleep = 0
-            time.sleep(time_to_sleep)
+            # time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
+            # if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
+            #     time_to_sleep = 0
+            # time.sleep(time_to_sleep)
+            while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
+                time.sleep( 0.001 )
             # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
 
         self._logger.info(f'Stopped {THREAD_NAME}')
