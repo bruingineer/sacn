@@ -129,9 +129,10 @@ class DataPacket(RootLayer):
                 not all((isinstance(x, int) and (0 <= x <= 255)) for x in data):
             raise ValueError(f'dmxData is a tuple with a max length of 512! The data in the tuple has to be valid bytes! '
                              f'Length was {len(data)}')
-        newData = [0]*512
-        for i in range(0, min(len(data), 512)):
-            newData[i] = data[i]
+        # newData = [0]*512
+        # for i in range(0, min(len(data), 512)):
+        #     newData[i] = data[i]
+        newData = data + (0,)*(512-len(data))
         self._dmxData = tuple(newData)
         # in theory this class supports dynamic length, so the next line is correcting the length
         self.length = 126 + len(self._dmxData)
