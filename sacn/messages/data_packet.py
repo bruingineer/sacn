@@ -125,11 +125,16 @@ class DataPacket(RootLayer):
         """
         For legacy devices and to prevent errors, the length of the DMX data is normalized to 512
         """
-        if len(data) > 512 or \
-                not all( (0 <= x <= 255) for x in data if isinstance(x, int)):
-                # not all((isinstance(x, int) and (0 <= x <= 255)) for x in data):
-            raise ValueError(f'dmxData is a tuple with a max length of 512! The data in the tuple has to be valid bytes! '
-                             f'Length was {len(data)}')
+        # if len(data) > 512 or \
+        #         not all((isinstance(x, int) and (0 <= x <= 255)) for x in data):
+        #     raise ValueError(f'dmxData is a tuple with a max length of 512! The data in the tuple has to be valid bytes! '
+        #                      f'Length was {len(data)}')
+        if len(data) > 512:
+            raise ValueError(f'dmxData is a tuple with a max length of 512! Length was {len(data)}.')
+        for x in data:
+            if not isinstance(x, int) or not (0 <= x <= 255):
+                raise ValueError(f'the data in dmxData has to be valid DMX values! Contained {x}.')
+
         # newData = [0]*512
         # for i in range(0, min(len(data), 512)):
         #     newData[i] = data[i]
