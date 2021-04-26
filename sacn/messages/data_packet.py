@@ -131,10 +131,10 @@ class DataPacket(RootLayer):
         #                      f'Length was {len(data)}')
         if len(data) > 512:
             raise ValueError(f'dmxData is a tuple with a max length of 512! Length was {len(data)}.')
-        for x in data:
-            if not isinstance(x, int) or not (0 <= x <= 255):
-                raise ValueError(f'the data in dmxData has to be valid DMX values! Contained {x}.')
-
+        # for x in data:
+        #     if not isinstance(x, int) or not (0 <= x <= 255):
+        #         raise ValueError(f'the data in dmxData has to be valid DMX values! Contained {x}.')
+        
         # newData = [0]*512
         # for i in range(0, min(len(data), 512)):
         #     newData[i] = data[i]
