@@ -59,7 +59,7 @@ class SenderSocketUDP(SenderSocketBase):
             #     time_to_sleep = 0
             # time.sleep(time_to_sleep)
             while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
-                time.sleep( 0.001 )
+                time.sleep( 0.0001 )
             # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
 
         self._logger.info(f'Stopped {THREAD_NAME}')
