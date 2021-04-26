@@ -44,7 +44,7 @@ class SenderHandler(SenderSocketListener):
         [self.send_out(output, current_time) for output in list(self._outputs.values())
             # only send if the manual flush feature is disabled
             # send out when the 1 second interval is over
-            if not self.manual_flush and
+            if True or not self.manual_flush and
             (abs(current_time - output._last_time_send) > SEND_OUT_INTERVAL or output._changed)]
 
     def send_out(self, output: Output, current_time: float):
