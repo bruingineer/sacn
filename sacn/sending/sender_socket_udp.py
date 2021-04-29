@@ -57,7 +57,6 @@ class SenderSocketUDP(SenderSocketBase):
             # time_stamp = time.perf_counter()
             self._listener.on_periodic_callback(time_stamp)
             time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
-            print(time_to_sleep)
             if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
                 time_to_sleep = 0
             time.sleep(time_to_sleep)
