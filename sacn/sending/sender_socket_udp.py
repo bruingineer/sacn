@@ -49,7 +49,6 @@ class SenderSocketUDP(SenderSocketBase):
         # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
         # thread.start()
         self.l.start(1/self.fps)
-        self.r.run()
 
     def send_task(self) -> None:
         time_stamp = time.time()
@@ -79,7 +78,6 @@ class SenderSocketUDP(SenderSocketBase):
         # self._enabled_flag = False
         try:
             self.l.stop()
-            self.r.stop()
         except:
             pass
 
