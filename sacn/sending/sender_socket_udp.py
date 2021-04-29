@@ -16,7 +16,7 @@ class SenderSocketUDP(SenderSocketBase):
     Implements a sender socket with a UDP socket of the OS.
     """
 
-    def __init__(self, listener: SenderSocketListener, bind_address: str, bind_port: int, fps: int):
+    def __init__(self, listener: SenderSocketListener, bind_address: str, bind_port: int, fps: int, rct: reactor = None):
         super().__init__(listener=listener)
 
         self._bind_address: str = bind_address
@@ -24,7 +24,7 @@ class SenderSocketUDP(SenderSocketBase):
         self._enabled_flag: bool = True
         self.fps: int = fps
         self.l = task.LoopingCall(self.send_task)
-        self.r = reactor()
+        self.reactor = rct
         # initialize the UDP socket
         self._socket: socket.socket = socket.socket(socket.AF_INET,  # Internet
                                                     socket.SOCK_DGRAM)  # UDP
