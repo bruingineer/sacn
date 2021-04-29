@@ -1,5 +1,7 @@
 # This file is under MIT license. The license file can be obtained in the root directory of this module.
 
+import cProfile
+
 import socket
 import time
 import threading
@@ -50,18 +52,19 @@ class SenderSocketUDP(SenderSocketBase):
     def send_loop(self) -> None:
         self._logger.info(f'Started {THREAD_NAME}')
         self._enabled_flag = True
-        while self._enabled_flag:
-            # time_stamp = time.time()
-            time_stamp = time.perf_counter()
-            self._listener.on_periodic_callback(time_stamp)
-            # time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
-            # if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
-            #     time_to_sleep = 0
-            # time.sleep(time_to_sleep)
-            while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
-                time.sleep( 0.005 )
-            # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
-
+        def runthis():
+            while self._enabled_flag:
+                time_stamp = time.time()
+                # time_stamp = time.perf_counter()
+                self._listener.on_periodic_callback(time_stamp)
+                time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
+                if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
+                    time_to_sleep = 0
+                time.sleep(time_to_sleep)
+                # while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
+                #     time.sleep( 0.005 )
+                # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
+        cProfile.run(runthis())
         self._logger.info(f'Stopped {THREAD_NAME}')
 
     def stop(self) -> None:
