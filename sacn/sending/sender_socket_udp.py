@@ -46,25 +46,23 @@ class SenderSocketUDP(SenderSocketBase):
             target=self.send_loop,
             name=THREAD_NAME
         )
-        # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
+        thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
         thread.start()
 
     def send_loop(self) -> None:
         self._logger.info(f'Started {THREAD_NAME}')
         self._enabled_flag = True
-        def runthis():
-            while self._enabled_flag:
-                time_stamp = time.time()
-                # time_stamp = time.perf_counter()
-                self._listener.on_periodic_callback(time_stamp)
-                time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
-                if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
-                    time_to_sleep = 0
-                time.sleep(time_to_sleep)
-                # while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
-                #     time.sleep( 0.005 )
-                # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
-        cProfile.run('runthis()')
+        while self._enabled_flag:
+            time_stamp = time.time()
+            # time_stamp = time.perf_counter()
+            self._listener.on_periodic_callback(time_stamp)
+            time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
+            if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
+                time_to_sleep = 0
+            time.sleep(time_to_sleep)
+            # while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
+            #     time.sleep( 0.005 )
+            # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
         self._logger.info(f'Stopped {THREAD_NAME}')
 
     def stop(self) -> None:
