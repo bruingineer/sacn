@@ -24,7 +24,7 @@ class SenderSocketUDP(SenderSocketBase):
         self._enabled_flag: bool = True
         self.fps: int = fps
         self.l = task.LoopingCall(self.send_task)
-
+        self.r = reactor()
         # initialize the UDP socket
         self._socket: socket.socket = socket.socket(socket.AF_INET,  # Internet
                                                     socket.SOCK_DGRAM)  # UDP
@@ -49,7 +49,7 @@ class SenderSocketUDP(SenderSocketBase):
         # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
         # thread.start()
         self.l.start(1/self.fps)
-        reactor.run()
+        self.r.run()
 
     def send_task(self) -> None:
         time_stamp = time.time()
@@ -79,7 +79,7 @@ class SenderSocketUDP(SenderSocketBase):
         # self._enabled_flag = False
         try:
             self.l.stop()
-            reactor.stop()
+            self.r.stop()
         except:
             pass
 
