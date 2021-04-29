@@ -23,7 +23,7 @@ class SenderSocketUDP(SenderSocketBase):
         self._bind_port: int = bind_port
         self._enabled_flag: bool = True
         self.fps: int = fps
-        self.l = task.LoopingCall(send_task)
+        self.l = task.LoopingCall(self.send_task)
 
         # initialize the UDP socket
         self._socket: socket.socket = socket.socket(socket.AF_INET,  # Internet
