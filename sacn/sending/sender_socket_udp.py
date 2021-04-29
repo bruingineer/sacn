@@ -77,8 +77,11 @@ class SenderSocketUDP(SenderSocketBase):
         Stop a potentially running thread by gracefull shutdown. Does not stop the thread immediately.
         """
         # self._enabled_flag = False
-        self.l.stop()
-        reactor.stop()
+        try:
+            self.l.stop()
+            reactor.stop()
+        except:
+            pass
 
     def send_unicast(self, data: RootLayer, destination: str) -> None:
         self.send_packet(data.getBytes(), destination)
