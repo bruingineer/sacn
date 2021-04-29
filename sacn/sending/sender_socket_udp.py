@@ -1,7 +1,6 @@
 # This file is under MIT license. The license file can be obtained in the root directory of this module.
 
-import cProfile
-
+from twisted.internet import task, reactor
 import socket
 import time
 import threading
@@ -24,6 +23,7 @@ class SenderSocketUDP(SenderSocketBase):
         self._bind_port: int = bind_port
         self._enabled_flag: bool = True
         self.fps: int = fps
+        self.l = task.LoopingCall(send_task)
 
         # initialize the UDP socket
         self._socket: socket.socket = socket.socket(socket.AF_INET,  # Internet
@@ -42,12 +42,19 @@ class SenderSocketUDP(SenderSocketBase):
 
     def start(self):
         # initialize thread infos
-        thread = threading.Thread(
-            target=self.send_loop,
-            name=THREAD_NAME
-        )
-        thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
-        thread.start()
+        # thread = threading.Thread(
+        #     target=self.send_loop,
+        #     name=THREAD_NAME
+        # )
+        # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
+        # thread.start()
+        self.l.start()
+        reactor.run()
+
+    def send_task(self) -> None:
+        time_stamp = time.time()
+        self._listener.on_periodic_callback(time_stamp)
+
 
     def send_loop(self) -> None:
         self._logger.info(f'Started {THREAD_NAME}')
@@ -69,7 +76,9 @@ class SenderSocketUDP(SenderSocketBase):
         """
         Stop a potentially running thread by gracefull shutdown. Does not stop the thread immediately.
         """
-        self._enabled_flag = False
+        # self._enabled_flag = False
+        self.l.stop()
+        reactor.stop()
 
     def send_unicast(self, data: RootLayer, destination: str) -> None:
         self.send_packet(data.getBytes(), destination)
