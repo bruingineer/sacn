@@ -42,13 +42,13 @@ class SenderSocketUDP(SenderSocketBase):
 
     def start(self):
         # initialize thread infos
-        # thread = threading.Thread(
-        #     target=self.send_loop,
-        #     name=THREAD_NAME
-        # )
-        # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
-        # thread.start()
-        self.l.start(1/self.fps)
+        thread = threading.Thread(
+            target=self.send_loop,
+            name=THREAD_NAME
+        )
+        thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
+        thread.start()
+        # self.l.start(1/self.fps)
 
     def send_task(self) -> None:
         time_stamp = time.time()
@@ -65,7 +65,7 @@ class SenderSocketUDP(SenderSocketBase):
             time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
             if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
                 time_to_sleep = 0
-            time.sleep(time_to_sleep)
+            time.sleep(0.003)
             # while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
             #     time.sleep( 0.005 )
             # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
@@ -75,11 +75,11 @@ class SenderSocketUDP(SenderSocketBase):
         """
         Stop a potentially running thread by gracefull shutdown. Does not stop the thread immediately.
         """
-        # self._enabled_flag = False
-        try:
-            self.l.stop()
-        except:
-            pass
+        self._enabled_flag = False
+        # try:
+        #     self.l.stop()
+        # except:
+        #     pass
 
     def send_unicast(self, data: RootLayer, destination: str) -> None:
         self.send_packet(data.getBytes(), destination)
