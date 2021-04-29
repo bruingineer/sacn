@@ -59,7 +59,7 @@ class SenderSocketUDP(SenderSocketBase):
             time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
             if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
                 time_to_sleep = 0
-            time.sleep(time_to_sleep)
+            time.sleep(0.001)
             # while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
             #     time.sleep( 0.005 )
             # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
