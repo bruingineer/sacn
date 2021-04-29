@@ -48,7 +48,7 @@ class SenderSocketUDP(SenderSocketBase):
         # )
         # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
         # thread.start()
-        self.l.start()
+        self.l.start(1/self.fps)
         reactor.run()
 
     def send_task(self) -> None:
