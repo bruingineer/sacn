@@ -41,7 +41,7 @@ class sACNsender:
         if len(cid) != 16:
             cid = tuple(int(random.random() * 255) for _ in range(0, 16))
         self._outputs: Dict[int, Output] = {}
-        self._sender_handler = SenderHandler(cid, source_name, self._outputs, bind_address, bind_port, fps, socket)
+        self._sender_handler = SenderHandler(cid, source_name, self._outputs, bind_address, bind_port, fps, socket, rct)
         self.universeDiscovery = universeDiscovery
         self._sync_universe: int = sync_universe
 

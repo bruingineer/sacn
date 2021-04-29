@@ -49,7 +49,7 @@ class SenderSocketUDP(SenderSocketBase):
         # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
         # thread.start()
         self.l.start(1/self.fps)
-        
+        self.r
 
     def send_task(self) -> None:
         time_stamp = time.time()
