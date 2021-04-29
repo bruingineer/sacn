@@ -64,7 +64,7 @@ class SenderSocketUDP(SenderSocketBase):
                 # while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
                 #     time.sleep( 0.005 )
                 # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
-        cProfile.run(runthis())
+        cProfile.run('runthis()')
         self._logger.info(f'Stopped {THREAD_NAME}')
 
     def stop(self) -> None:
