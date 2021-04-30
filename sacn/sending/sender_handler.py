@@ -41,12 +41,15 @@ class SenderHandler(SenderSocketListener):
 
         # go through the list of outputs and send everything out that has to be send out
         # Note: dict may changes size during iteration (multithreading)
-        [self.send_out(output, current_time) for output in list(self._outputs.values())
+        # [self.send_out(output, current_time) for output in list(self._outputs.values())
             # only send if the manual flush feature is disabled
             # send out when the 1 second interval is over
             # if not self.manual_flush and
             # (abs(current_time - output._last_time_send) > SEND_OUT_INTERVAL or output._changed)]
-        ]
+        for out in self._outputs.values():
+            if (output._changed or (abs(current_time-out._last_time_send) > SEND_OUT_INTERVAL)):
+                self.send_out(out, current_time)
+        
 
     def send_out(self, output: Output, current_time: float):
         # 1st: Destination (check if multicast)
