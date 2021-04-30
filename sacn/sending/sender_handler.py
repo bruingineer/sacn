@@ -46,9 +46,9 @@ class SenderHandler(SenderSocketListener):
             # send out when the 1 second interval is over
             # if not self.manual_flush and
             # (abs(current_time - output._last_time_send) > SEND_OUT_INTERVAL or output._changed)]
-        for out in self._outputs.values():
+        for output in self._outputs.values():
             if (output._changed or (abs(current_time-out._last_time_send) > SEND_OUT_INTERVAL)):
-                self.send_out(out, current_time)
+                self.send_out(output, current_time)
         
 
     def send_out(self, output: Output, current_time: float):
