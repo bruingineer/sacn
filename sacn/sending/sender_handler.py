@@ -47,7 +47,7 @@ class SenderHandler(SenderSocketListener):
             # if not self.manual_flush and
             # (abs(current_time - output._last_time_send) > SEND_OUT_INTERVAL or output._changed)]
         for output in self._outputs.values():
-            if (output._changed or (abs(current_time-out._last_time_send) > SEND_OUT_INTERVAL)):
+            if (output._changed or (abs(current_time - output._last_time_send) > SEND_OUT_INTERVAL)):
                 self.send_out(output, current_time)
         
 
