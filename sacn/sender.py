@@ -13,14 +13,12 @@ from sacn.messages.data_packet import DataPacket
 from sacn.sending.output import Output
 from sacn.sending.sender_socket_base import SenderSocketBase, DEFAULT_PORT
 from sacn.sending.sender_handler import SenderHandler
-from twisted.internet import reactor
-
 
 class sACNsender:
     def __init__(self, bind_address: str = '0.0.0.0', bind_port: int = DEFAULT_PORT,
                  source_name: str = 'default source name', cid: tuple = (),
                  fps: int = 30, universeDiscovery: bool = True,
-                 sync_universe: int = 63999, socket: SenderSocketBase = None, rct: reactor = None):
+                 sync_universe: int = 63999, socket: SenderSocketBase = None):
         """
         Creates a sender object. A sender is used to manage multiple sACN universes and handles their sending.
         DMX data is send out every second, when no data changes. Some changes may be not send out, because the fps
@@ -41,7 +39,7 @@ class sACNsender:
         if len(cid) != 16:
             cid = tuple(int(random.random() * 255) for _ in range(0, 16))
         self._outputs: Dict[int, Output] = {}
-        self._sender_handler = SenderHandler(cid, source_name, self._outputs, bind_address, bind_port, fps, socket, rct)
+        self._sender_handler = SenderHandler(cid, source_name, self._outputs, bind_address, bind_port, fps, socket)
         self.universeDiscovery = universeDiscovery
         self._sync_universe: int = sync_universe
 

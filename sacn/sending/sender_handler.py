@@ -8,20 +8,19 @@ from sacn.sending.output import Output
 from sacn.sending.sender_socket_base import SenderSocketBase, SenderSocketListener
 from sacn.sending.sender_socket_udp import SenderSocketUDP
 
-from twisted.internet import reactor
 SEND_OUT_INTERVAL = 1
 E131_E131_UNIVERSE_DISCOVERY_INTERVAL = 10
 
 
 class SenderHandler(SenderSocketListener):
     # TODO: start using type CID instead of tuple
-    def __init__(self, cid: tuple, source_name: str, outputs: Dict[int, Output], bind_address: str, bind_port: int, fps: int, socket: SenderSocketBase = None, rct: reactor = None):
+    def __init__(self, cid: tuple, source_name: str, outputs: Dict[int, Output], bind_address: str, bind_port: int, fps: int, socket: SenderSocketBase = None):
         """
         This is a private class and should not be used elsewhere. It handles the sender state with sACN specific values.
         Uses a UDP sender socket with the given bind-address and -port, if the socket was not provided (i.e. None).
         """
         if socket is None:
-            self.socket: SenderSocketBase = SenderSocketUDP(self, bind_address, bind_port, fps, rct=rct)
+            self.socket: SenderSocketBase = SenderSocketUDP(self, bind_address, bind_port, fps)
         else:
             self.socket: SenderSocketBase = socket
 

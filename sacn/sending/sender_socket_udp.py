@@ -1,6 +1,5 @@
 # This file is under MIT license. The license file can be obtained in the root directory of this module.
 
-from twisted.internet import task, reactor
 import socket
 import time
 import threading
@@ -16,15 +15,14 @@ class SenderSocketUDP(SenderSocketBase):
     Implements a sender socket with a UDP socket of the OS.
     """
 
-    def __init__(self, listener: SenderSocketListener, bind_address: str, bind_port: int, fps: int, rct: reactor = None):
+    def __init__(self, listener: SenderSocketListener, bind_address: str, bind_port: int, fps: int):
         super().__init__(listener=listener)
 
         self._bind_address: str = bind_address
         self._bind_port: int = bind_port
         self._enabled_flag: bool = True
         self.fps: int = fps
-        self.l = task.LoopingCall(self.send_task)
-        self.r = rct
+
         # initialize the UDP socket
         self._socket: socket.socket = socket.socket(socket.AF_INET,  # Internet
                                                     socket.SOCK_DGRAM)  # UDP
@@ -48,12 +46,6 @@ class SenderSocketUDP(SenderSocketBase):
         )
         thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
         thread.start()
-        # self.l.start(1/self.fps)
-
-    def send_task(self) -> None:
-        time_stamp = time.time()
-        self._listener.on_periodic_callback(time_stamp)
-
 
     def send_loop(self) -> None:
         self._logger.info(f'Started {THREAD_NAME}')
@@ -65,7 +57,7 @@ class SenderSocketUDP(SenderSocketBase):
             time_to_sleep = (1 / self.fps) - (time.time() - time_stamp)
             if time_to_sleep < 0:  # if time_to_sleep is negative (because the loop has too much work to do) set it to 0
                 time_to_sleep = 0
-            time.sleep(0.003)
+            time.sleep(0.00001)
             # while (( 1 / self.fps) - (time.perf_counter() - time_stamp)) > 0:
             #     time.sleep( 0.005 )
             # this sleeps nearly exactly so long that the loop is called every 1/fps seconds
@@ -76,10 +68,6 @@ class SenderSocketUDP(SenderSocketBase):
         Stop a potentially running thread by gracefull shutdown. Does not stop the thread immediately.
         """
         self._enabled_flag = False
-        # try:
-        #     self.l.stop()
-        # except:
-        #     pass
 
     def send_unicast(self, data: RootLayer, destination: str) -> None:
         self.send_packet(data.getBytes(), destination)
