@@ -37,7 +37,7 @@ class SenderHandler(SenderSocketListener):
         # send out universe discovery packets if necessary
         if abs(current_time - self._last_time_universe_discover) > E131_E131_UNIVERSE_DISCOVERY_INTERVAL \
                 and self.universe_discovery:
-            await self.send_universe_discovery_packets()
+            self.send_universe_discovery_packets()
             self._last_time_universe_discover = current_time
 
         # go through the list of outputs and send everything out that has to be send out
