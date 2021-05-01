@@ -3,6 +3,7 @@
 import socket
 import time
 import threading
+import asyncio
 
 from sacn.messages.root_layer import RootLayer
 from sacn.sending.sender_socket_base import SenderSocketBase, SenderSocketListener, DEFAULT_PORT
@@ -38,6 +39,11 @@ class SenderSocketUDP(SenderSocketBase):
             self._logger.exception(f'Could not bind to IP:{self._bind_address} Port:{self._bind_port}')
             raise
 
+    async def start_async(self):
+        while 1:
+            await self.send_loop_async()
+            await asyncio.sleep(0.01)
+
     def start(self):
         # initialize thread infos
         thread = threading.Thread(
@@ -46,6 +52,10 @@ class SenderSocketUDP(SenderSocketBase):
         )
         # thread.setDaemon(True)  # TODO: might be beneficial to use a daemon thread
         thread.start()
+
+    async def send_loop_async(self) -> None:
+        time_stamp = time.time()
+        await self._listener.on_periodic_callback_async(time_stamp)
 
     def send_loop(self) -> None:
         self._logger.info(f'Started {THREAD_NAME}')

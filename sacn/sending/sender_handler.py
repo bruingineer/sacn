@@ -7,6 +7,7 @@ from sacn.messages.data_packet import calculate_multicast_addr
 from sacn.sending.output import Output
 from sacn.sending.sender_socket_base import SenderSocketBase, SenderSocketListener
 from sacn.sending.sender_socket_udp import SenderSocketUDP
+import asyncio
 
 SEND_OUT_INTERVAL = 1
 E131_E131_UNIVERSE_DISCOVERY_INTERVAL = 10
@@ -31,6 +32,21 @@ class SenderHandler(SenderSocketListener):
         self._outputs: Dict[int, Output] = outputs
         self.manual_flush: bool = False
         self._sync_sequence = 0
+
+    async def on_periodic_callback_async(self, current_time: float) -> None:
+        # send out universe discovery packets if necessary
+        if abs(current_time - self._last_time_universe_discover) > E131_E131_UNIVERSE_DISCOVERY_INTERVAL \
+                and self.universe_discovery:
+            await self.send_universe_discovery_packets()
+            self._last_time_universe_discover = current_time
+
+        # go through the list of outputs and send everything out that has to be send out
+        # Note: dict may changes size during iteration (multithreading)
+        [await self.send_out(output, current_time) for output in list(self._outputs.values())
+            # only send if the manual flush feature is disabled
+            # send out when the 1 second interval is over
+            if not self.manual_flush and
+            (abs(current_time - output._last_time_send) > SEND_OUT_INTERVAL or output._changed)]
 
     def on_periodic_callback(self, current_time: float) -> None:
         # send out universe discovery packets if necessary
