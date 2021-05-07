@@ -14,7 +14,6 @@ from sacn.sending.output import Output
 from sacn.sending.sender_socket_base import SenderSocketBase, DEFAULT_PORT
 from sacn.sending.sender_handler import SenderHandler
 
-
 class sACNsender:
     def __init__(self, bind_address: str = '0.0.0.0', bind_port: int = DEFAULT_PORT,
                  source_name: str = 'default source name', cid: tuple = (),
